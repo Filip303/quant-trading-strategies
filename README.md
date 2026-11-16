@@ -1,47 +1,36 @@
 # Quant Trading Strategies
 
-Notebooks de Python para investigar reglas de trading con datos históricos. La colección incluye reversión a la media, momentum y modelos de régimen de mercado.
+Eight Python notebooks for researching mean reversion, momentum, market regimes, and machine learning. Each notebook downloads real daily market data from Yahoo Finance through `yfinance`. No API key is required. [yfinance documentation](https://ranaroussi.github.io/yfinance/)
 
-## Estrategias
+## Strategies
 
-| Notebook | Idea | Datos |
-| --- | --- | --- |
-| [Bandas de Bollinger y RSI](notebooks/bollinger-rsi.ipynb) | Combina ambos indicadores para buscar reversiones a la media. | FMP |
-| [IBS y ROC](notebooks/ibs-roc.ipynb) | Usa la posición del cierre en el rango diario y la tasa de cambio del precio. Incluye dos variantes. | FMP |
-| [IBS y medias móviles exponenciales](notebooks/ibs-ema.ipynb) | Combina el cierre dentro del rango diario con filtros de tendencia EMA. | Yahoo Finance |
-| [Momentum de series temporales](notebooks/tsmom.ipynb) | Usa la tendencia del activo para definir la señal y ajusta la exposición según la volatilidad. | FMP |
-| [Regímenes con mezcla gaussiana](notebooks/gmm-regimes.ipynb) | Reestima el modelo de regímenes en ventanas sucesivas y simula las señales de cada tramo. | FMP |
-| [Regímenes por umbrales de volatilidad](notebooks/volatility-threshold-regimes.ipynb) | Estima la volatilidad Yang–Zhang y aplica umbrales móviles con validación walk-forward. | FMP |
-| [Asignación por HMM y semivarianza](notebooks/hmm-semivariance-allocation.ipynb) | Estima regímenes con un modelo oculto de Márkov y ajusta la asignación de cartera según el régimen. | FMP |
-| [XGBoost adaptativo al régimen](notebooks/xgboost-regime-adaptive.ipynb) | Combina XGBoost con un modelo de regímenes y recalibra los umbrales de entrada y salida en cada ventana. | FMP |
+| Notebook | Strategy |
+| --- | --- |
+| [Bollinger Bands and RSI](notebooks/bollinger-rsi.ipynb) | Combines Bollinger Bands with the Relative Strength Index to identify mean-reversion signals. |
+| [Internal Bar Strength and Rate of Change](notebooks/ibs-roc.ipynb) | Tests two strategies that combine the close's position within the daily range with the rate of price change. |
+| [Internal Bar Strength and Exponential Moving Averages](notebooks/ibs-ema.ipynb) | Filters AAPL's Internal Bar Strength signals using 8- and 24-day exponential moving averages. |
+| [Time-Series Momentum](notebooks/tsmom.ipynb) | Trades in the direction of the asset's trend and sizes exposure using volatility. |
+| [Gaussian Mixture Regimes](notebooks/gmm-regimes.ipynb) | Re-estimates a Gaussian mixture model in successive windows and simulates signals for each test window. |
+| [Volatility Threshold Regimes](notebooks/volatility-threshold-regimes.ipynb) | Applies rolling thresholds to Yang–Zhang volatility and tests each rule using walk-forward validation. |
+| [HMM and Semivariance Allocation](notebooks/hmm-semivariance-allocation.ipynb) | Estimates market regimes with a hidden Markov model and adjusts portfolio weights by regime. |
+| [Regime-Adaptive XGBoost](notebooks/xgboost-regime-adaptive.ipynb) | Combines XGBoost with hidden Markov regimes and recalibrates entry and exit thresholds in each window. |
 
-## Ejecutar los notebooks
+## Run a notebook
 
-Con Python 3.13, instala las dependencias en un entorno virtual desde la raíz del repositorio.
+From the repository root, create a virtual environment with Python 3.13.
 
 ```bash
 python -m venv .venv
 ```
 
-Activa el entorno con el comando de tu sistema.
+Activate it using the command for your shell.
 
-- macOS y Linux usan `source .venv/bin/activate`.
-- PowerShell usa `.\.venv\Scripts\Activate.ps1`.
+- macOS and Linux use `source .venv/bin/activate`.
+- Windows PowerShell uses `.\.venv\Scripts\Activate.ps1`.
 
 ```bash
 python -m pip install -r requirements.txt
+python -m jupyterlab
 ```
 
-Para los notebooks de Financial Modeling Prep (FMP), define `FMP_API_KEY` antes de iniciar Jupyter. Tu cuenta debe tener acceso a los símbolos y al rango histórico que configura cada notebook. [Documentación del endpoint histórico de FMP](https://site.financialmodelingprep.com/developer/docs/stable/historical-price-eod-full)
-
-```bash
-# macOS y Linux
-export FMP_API_KEY='tu_clave'
-```
-
-```powershell
-# Windows PowerShell
-$env:FMP_API_KEY = 'tu_clave'
-```
-
-Inicia `python -m jupyterlab`, abre el notebook y ejecuta las celdas en orden. El notebook de Yahoo Finance descarga los datos sin clave. Algunos notebooks escriben CSV o gráficos en el directorio de ejecución o en `results/`. Los supuestos de costes, fechas y ejecución varían entre estrategias.
+Open a file in `notebooks/` and run its cells in order. Symbols and dates are set in each notebook. The volatility-threshold parameter search and the XGBoost multi-asset validation can take several minutes. Some notebooks write CSVs and figures to the current directory or a `results/` subdirectory. The assumptions about trading costs, execution, and price adjustments vary by strategy.
