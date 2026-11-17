@@ -39,3 +39,11 @@ def download_ohlcv(symbol, start, end, *, auto_adjust=False, end_inclusive=True)
     if prices.empty:
         raise RuntimeError(f"Yahoo Finance returned no complete daily prices for {symbol}.")
     return prices.sort_index()
+
+
+def download_price_records(symbol, start, end):
+    """Return dated records with lowercase OHLCV fields and optional adjClose."""
+    prices = download_ohlcv(symbol, start, end)
+    columns = {column: column.lower() for column in prices}
+    columns["Adj Close"] = "adjClose"
+    return prices.rename(columns=columns).rename_axis("date").reset_index().to_dict("records")
